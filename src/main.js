@@ -487,19 +487,16 @@ const render = (container, block) => {
   container.insertAdjacentHTML(`beforeend`, block);
 };
 
-const mainContainer = document.querySelector(`.main`);
-const menuContainer = document.querySelector(`.main__control`);
+render(document.querySelector(`.main__control`), menu());
+render(document.querySelector(`.main`), search());
+render(document.querySelector(`.main`), filter());
+render(document.querySelector(`.main`), board());
 
-render(menuContainer, menu());
-render(mainContainer, search());
-render(mainContainer, filter());
-render(mainContainer, board());
+render(document.querySelector(`.board__tasks`), editTask());
 
-const boardContainer = document.querySelector(`.board__tasks`);
+for (let i = 0; i < 3; i++) {
+  render(document.querySelector(`.board__tasks`), card());
+}
 
-render(boardContainer, editTask());
-render(boardContainer, card());
-render(boardContainer, card());
-render(boardContainer, card());
-render(mainContainer, loadMore());
+render(document.querySelector(`.main`), loadMore());
 
