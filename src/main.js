@@ -491,7 +491,6 @@ render(document.querySelector(`.main__control`), menu());
 render(document.querySelector(`.main`), search());
 render(document.querySelector(`.main`), filter());
 render(document.querySelector(`.main`), board());
-
 render(document.querySelector(`.board__tasks`), editTask());
 
 for (let i = 0; i < 3; i++) {
