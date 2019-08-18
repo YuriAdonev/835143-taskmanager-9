@@ -60,7 +60,7 @@ const getFilterCount = (title) => {
   return filteredTasks.length;
 };
 
-export const getFilters = () => {
+const makeFilters = () => {
   filtersTitle.forEach((item) => {
     filters.push({
       title: item,
@@ -69,7 +69,7 @@ export const getFilters = () => {
   });
 };
 
-export const getTask = () => ({
+const getTask = () => ({
   description: [
     `Изучить теорию`,
     `Сделать домашку`,
@@ -97,8 +97,11 @@ export const getTask = () => ({
   isArchive: Boolean(Math.round(Math.random())),
 });
 
-for (let i = 0; i < COUNT_TASKS; i++) {
-  tasks.push(getTask());
-}
+const makeTasks = () => {
+  for (let i = 0; i < COUNT_TASKS; i++) {
+    tasks.push(getTask());
+  }
+};
 
-getFilters();
+makeTasks();
+makeFilters();
