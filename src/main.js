@@ -42,23 +42,27 @@ const hideTasksLoader = () => {
   document.querySelector(`.load-more`).classList.add(`visually-hidden`);
 };
 
+const showFirstCards = () => {
+  if (tasks.length > FIRST_TASKS_COUNT_TO_LOAD) {
+    for (let i = 0; i < FIRST_TASKS_COUNT_TO_LOAD; i++) {
+      render(document.querySelector(`.board__tasks`), createTaskTemplate(tasks[shownTasks]));
+      shownTasks++;
+    }
+  } else {
+    for (let i = 0; i < tasks.length; i++) {
+      render(document.querySelector(`.board__tasks`), createTaskTemplate(tasks[shownTasks]));
+      shownTasks++;
+    }
+  }
+};
+
 render(document.querySelector(`.main__control`), createSiteMenuTemplate());
 render(document.querySelector(`.main`), createSearchTemplate());
 render(document.querySelector(`.main`), createFilterTemplate(filters));
 render(document.querySelector(`.main`), createBoardTemplate());
 render(document.querySelector(`.board__tasks`), createTaskEditTemplate());
 
-if (tasks.length > FIRST_TASKS_COUNT_TO_LOAD) {
-  for (let i = 0; i < FIRST_TASKS_COUNT_TO_LOAD; i++) {
-    render(document.querySelector(`.board__tasks`), createTaskTemplate(tasks[shownTasks]));
-    shownTasks++;
-  }
-} else {
-  for (let i = 0; i < tasks.length; i++) {
-    render(document.querySelector(`.board__tasks`), createTaskTemplate(tasks[shownTasks]));
-    shownTasks++;
-  }
-}
+showFirstCards();
 
 render(document.querySelector(`.main`), createLoadMoreButtonTemplate());
 

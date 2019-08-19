@@ -22,11 +22,33 @@ const filtersTitle = [
   `Archive`,
 ];
 
-const getTags = () => {
-  const newTags = new Set([]);
+const descriptions = [
+  `Изучить теорию`,
+  `Сделать домашку`,
+  `Пройти интенсив на соточку`
+];
 
-  for (let i = 0; i < Math.floor(Math.random() * (MAX_TAGS + 1)); i++) {
-    newTags.add(tags[Math.floor(Math.random() * tags.length)]);
+const colors = [
+  `black`,
+  `yellow`,
+  `blue`,
+  `green`,
+  `pink`,
+];
+
+const getRandomNumber = (maxValue) => {
+  return Math.floor(Math.random() * maxValue);
+};
+
+const getRandomBoolean = () => {
+  return Boolean(Math.round(Math.random()));
+};
+
+const getTags = () => {
+  const newTags = new Set();
+
+  for (let i = 0; i < getRandomNumber(MAX_TAGS + 1); i++) {
+    newTags.add(tags[getRandomNumber(tags.length)]);
   }
 
   return newTags;
@@ -70,14 +92,10 @@ const makeFilters = () => {
 };
 
 const getTask = () => ({
-  description: [
-    `Изучить теорию`,
-    `Сделать домашку`,
-    `Пройти интенсив на соточку`
-  ][Math.floor(Math.random() * 3)],
-  dueDate: Date.now() + 1 + (Math.floor(Math.random() * 14) * 24 * 60 * 60 * 1000) - (Math.floor(Math.random() * 7) * 24 * 60 * 60 * 1000),
+  description: descriptions[getRandomNumber(3)],
+  dueDate: Date.now() + 1 + (getRandomNumber(14) * 24 * 60 * 60 * 1000) - (getRandomNumber(7) * 24 * 60 * 60 * 1000),
   repeatingDays: {
-    'mo': Boolean(Math.round(Math.random())),
+    'mo': getRandomBoolean(),
     'tu': false,
     'we': false,
     'th': false,
@@ -86,15 +104,9 @@ const getTask = () => ({
     'su': false,
   },
   tags: getTags(),
-  color: [
-    `black`,
-    `yellow`,
-    `blue`,
-    `green`,
-    `pink`,
-  ][Math.floor(Math.random() * 5)],
-  isFavorite: Boolean(Math.round(Math.random())),
-  isArchive: Boolean(Math.round(Math.random())),
+  color: colors[getRandomNumber(5)],
+  isFavorite: getRandomBoolean(),
+  isArchive: getRandomBoolean(),
 });
 
 const makeTasks = () => {
