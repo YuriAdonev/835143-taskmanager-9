@@ -1,20 +1,60 @@
+import {Position, render, unrender} from './components/utils';
 import {tasks, filters} from './components/data';
-import {createSiteMenuTemplate} from './components/site-menu';
-import {createSearchTemplate} from './components/search';
-import {createFilterTemplate} from './components/filter';
-import {createBoardTemplate} from './components/board';
-import {createTaskTemplate} from './components/task';
-import {createTaskEditTemplate} from './components/task-edit';
-import {createLoadMoreButtonTemplate} from './components/load-more';
+import SiteMenu from './components/site-menu';
+import Search from './components/search';
+import Filter from './components/filter';
+import Board from './components/board';
+import Task from './components/task';
+import TaskEdit from './components/task-edit';
+import LoadMore from './components/load-more';
 
-const FIRST_TASKS_COUNT_TO_LOAD = 7;
 const DEFAULT_TASKS_COUNT_TO_LOAD = 8;
 
 let shownTasks = 0;
 let totalTasks = tasks.length;
 
-const render = (container, block) => {
-  container.insertAdjacentHTML(`beforeend`, block);
+const siteMenu = new SiteMenu();
+const search = new Search();
+const filter = new Filter(filters);
+const board = new Board();
+const loadMore = new LoadMore();
+
+const renderTask = (taskMock) => {
+  const task = new Task(taskMock);
+  const taskEdit = new TaskEdit(taskMock);
+
+  const onEscKeyDown = (evt) => {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      tasksContainer.replaceChild(task.getElement(), taskEdit.getElement());
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
+  task.getElement()
+    .querySelector(`.card__btn--edit`)
+    .addEventListener(`click`, () => {
+      tasksContainer.replaceChild(taskEdit.getElement(), task.getElement());
+      document.addEventListener(`keydown`, onEscKeyDown);
+    });
+
+  taskEdit.getElement().querySelector(`textarea`)
+    .addEventListener(`focus`, () => {
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    });
+
+  taskEdit.getElement().querySelector(`textarea`)
+    .addEventListener(`blur`, () => {
+      document.addEventListener(`keydown`, onEscKeyDown);
+    });
+
+  taskEdit.getElement()
+    .querySelector(`.card__save`)
+    .addEventListener(`click`, () => {
+      tasksContainer.replaceChild(task.getElement(), taskEdit.getElement());
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    });
+
+  render(tasksContainer, task.getElement(), Position.BEFOREEND);
 };
 
 const loadMoreTasks = () => {
@@ -28,44 +68,41 @@ const loadMoreTasks = () => {
     taskToShow = DEFAULT_TASKS_COUNT_TO_LOAD;
   }
 
-  renderTasks(taskToShow);
-};
-
-const renderTasks = (taskToShow) => {
   for (let i = 0; i < taskToShow; i++) {
-    render(document.querySelector(`.board__tasks`), createTaskTemplate(tasks[shownTasks]));
+    render(tasksContainer, renderTask(tasks[shownTasks]));
     shownTasks++;
   }
 };
 
 const hideTasksLoader = () => {
-  document.querySelector(`.load-more`).classList.add(`visually-hidden`);
+  unrender(loadMore.getElement());
 };
 
 const showFirstCards = () => {
-  if (tasks.length > FIRST_TASKS_COUNT_TO_LOAD) {
-    for (let i = 0; i < FIRST_TASKS_COUNT_TO_LOAD; i++) {
-      render(document.querySelector(`.board__tasks`), createTaskTemplate(tasks[shownTasks]));
+  if (tasks.length > DEFAULT_TASKS_COUNT_TO_LOAD) {
+    for (let i = 0; i < DEFAULT_TASKS_COUNT_TO_LOAD; i++) {
+      render(tasksContainer, renderTask(tasks[shownTasks]));
       shownTasks++;
     }
   } else {
     for (let i = 0; i < tasks.length; i++) {
-      render(document.querySelector(`.board__tasks`), createTaskTemplate(tasks[shownTasks]));
+      render(tasksContainer, renderTask(tasks[shownTasks]));
       shownTasks++;
     }
   }
 };
 
-render(document.querySelector(`.main__control`), createSiteMenuTemplate());
-render(document.querySelector(`.main`), createSearchTemplate());
-render(document.querySelector(`.main`), createFilterTemplate(filters));
-render(document.querySelector(`.main`), createBoardTemplate());
-render(document.querySelector(`.board__tasks`), createTaskEditTemplate());
+render(document.querySelector(`.main__control`), siteMenu.getElement(), Position.BEFOREEND);
+render(document.querySelector(`.main`), search.getElement(), Position.BEFOREEND);
+render(document.querySelector(`.main`), filter.getElement(), Position.BEFOREEND);
+render(document.querySelector(`.main`), board.getElement(), Position.BEFOREEND);
+
+const tasksContainer = document.querySelector(`.board__tasks`);
 
 showFirstCards();
 
-render(document.querySelector(`.main`), createLoadMoreButtonTemplate());
+render(document.querySelector(`.main`), loadMore.getElement(), Position.BEFOREEND);
 
-document.querySelector(`.load-more`).addEventListener(`click`, () => {
+loadMore.getElement().addEventListener(`click`, () => {
   loadMoreTasks();
 });
