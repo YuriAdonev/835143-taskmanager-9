@@ -3,7 +3,6 @@ import AbstractComponent from "./abstract";
 export default class Board extends AbstractComponent {
   constructor() {
     super();
-    this._element = null;
   }
 
   getTemplate() {

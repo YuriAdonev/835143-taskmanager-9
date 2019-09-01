@@ -3,7 +3,6 @@ import AbstractComponent from "./abstract";
 export default class LoadMore extends AbstractComponent {
   constructor() {
     super();
-    this._element = null;
   }
 
   getTemplate() {
